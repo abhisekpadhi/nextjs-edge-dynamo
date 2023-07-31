@@ -10,7 +10,7 @@ import {
 import { NativeAttributeValue } from '@aws-sdk/util-dynamodb';
 
 type Data = {
-	item: unknown;
+	[k: string]: unknown;
 };
 
 const ddbClient = new DynamoDBClient({
@@ -70,6 +70,10 @@ export default async function handler(
 	req: NextApiRequest,
 	res: NextApiResponse<Data>
 ) {
+	const start = Date.now();
 	const data = await dynamo.getItem('test', { pid: 'p123' });
+	const end = Date.now();
+	const timeInMs = `${end - start}ms`;
+	console.log('time taken in dynamo query:', timeInMs);
 	res.status(200).json({ item: data.Item });
 }
